@@ -1,2 +1,5 @@
 # tech_house
-personal domotic project
+#personal domotic project
+
+#dependencies
+
