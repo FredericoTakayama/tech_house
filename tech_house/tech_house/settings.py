@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for tech_house project.
 
@@ -11,10 +12,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+DEFAULT_FROM_EMAIL = 'f.takayama2014@gmail.com'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -23,10 +24,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ab@4v36yrj7y^nf%x67em1020uhf5)*vi&my9s82y7!#=l#dvr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ADMINS = [
+    ('Frederico Takayama', DEFAULT_FROM_EMAIL),
+]
 
+MANAGERS = ADMINS
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -50,6 +56,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tech_house.urls'
+
+#set where is template folder
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR,'templates'),
+)
 
 TEMPLATES = [
     {
@@ -75,11 +86,14 @@ WSGI_APPLICATION = 'tech_house.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.sqlite3', # mudar para mysql em modo de produção, para o rasp coletar infos
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), # path do arquivo do banco
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -103,18 +117,51 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br' # 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
-USE_I18N = True
+USE_I18N = True # internacionalização
 
-USE_L10N = True
+USE_L10N = True # internacionalização
 
-USE_TZ = True
+USE_TZ = True # internacionalização
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # diretorio que sera usado pelo apache
+
+# ex. www.someurl.com/media/
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = ( # eh aonde se coloca os arquivos que o django ira salvar no diretorio static posteriormente
+    ('site', os.path.join(BASE_DIR,'sitestatic')),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+)
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader'
+)
+
+# ==============================================================================================
+# Load settings_local.py if exists
+# ==============================================================================================
+try:
+    filename = os.path.join(BASE_DIR, 'settings_local.py')
+    # print(filename)
+    exec(compile(open(filename, "rb").read(), filename, 'exec'), globals(), locals())
+
+except IOError:
+    pass
